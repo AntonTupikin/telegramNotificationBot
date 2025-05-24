@@ -1,6 +1,7 @@
 package com.example.telegram.bot;
 
 import com.example.telegram.config.BotConfig;
+import com.example.telegram.service.ClientService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,9 +16,11 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Slf4j
 public class NotificationBot extends TelegramLongPollingBot {
     private final BotConfig config;
+    private final ClientService clientService;
 
-    public NotificationBot(BotConfig config) {
+    public NotificationBot(BotConfig config, ClientService clientService) {
         this.config = config;
+        this.clientService = clientService;
     }
 
     @PostConstruct
@@ -41,10 +44,20 @@ public class NotificationBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String chatId = update.getMessage().getChatId().toString();
             String text = update.getMessage().getText();
-
-            SendMessage response = new SendMessage(chatId, "Вы написали: " + text);
             try {
-                execute(response);
+                if ("/start".equals(text)) {
+                    String firstName = update.getMessage().getFrom().getFirstName();
+                    String lastName = update.getMessage().getFrom().getLastName();
+                    if (clientService.findByChatId(chatId).isEmpty()) {
+                        clientService.createClient(firstName, lastName, chatId);
+                    }
+                    execute(new SendMessage(chatId, "Добро пожаловать, " + firstName + "!"));
+                } else {
+                    String name = clientService.findByChatId(chatId)
+                            .map(c -> c.getName())
+                            .orElse("");
+                    execute(new SendMessage(chatId, "Привет, " + name + "! Хорошего дня!"));
+                }
             } catch (TelegramApiException e) {
                 log.error("Failed to send message", e);
             }
