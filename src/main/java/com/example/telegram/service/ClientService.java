@@ -26,4 +26,11 @@ public class ClientService {
     public Optional<Client> findByChatId(String chatId) {
         return repository.findByTelegramChatId(chatId);
     }
+
+    public void updateCity(String chatId, String city) {
+        repository.findByTelegramChatId(chatId).ifPresent(client -> {
+            client.setCity(city);
+            repository.save(client);
+        });
+    }
 }

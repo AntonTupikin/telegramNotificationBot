@@ -19,6 +19,9 @@ public class Client {
     @Column(name = "telegram_chat_id", nullable = false, unique = true)
     private String telegramChatId;
 
+    @Column
+    private String city;
+
     public Long getId() {
         return id;
     }
@@ -49,5 +52,13 @@ public class Client {
 
     public void setTelegramChatId(String telegramChatId) {
         this.telegramChatId = telegramChatId;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

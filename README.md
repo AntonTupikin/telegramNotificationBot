@@ -13,6 +13,7 @@ export TELEGRAM_CHAT_ID=your_chat_id
 export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/telegram
 export SPRING_DATASOURCE_USERNAME=postgres
 export SPRING_DATASOURCE_PASSWORD=postgres
+export OPENWEATHER_API_KEY=your_openweather_key
 ```
 
 После чего приложение можно запустить командой:
@@ -26,3 +27,4 @@ mvn spring-boot:run
 После запуска можно открыть [Swagger UI](http://localhost:8080/swagger-ui.html) для тестирования API.
 
 После команды `/start` бот сохраняет информацию о пользователе в базе. Дальнейшие сообщения он приветствует по имени и желает хорошего дня.
+Бот попросит указать город пользователя и сохранит его. По команде `/weather` он показывает прогноз погоды на ближайшие два дня, используя API openweathermap.org.
