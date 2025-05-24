@@ -15,13 +15,20 @@ public class WeatherService {
 
     public WeatherService(RestTemplateBuilder builder,
                           @Value("${openweather.api-key}") String apiKey) {
-        this.restTemplate = builder.build();
+        this.restTemplate = builder
+                .setConnectTimeout(java.time.Duration.ofSeconds(5))
+                .setReadTimeout(java.time.Duration.ofSeconds(5))
+                .build();
         this.apiKey = apiKey;
     }
 
     public String getTwoDayForecast(String city) {
-        String url = "https://api.openweathermap.org/data/2.5/forecast?q={city}&cnt=16&appid={key}&units=metric&lang=ru";
-        String json = restTemplate.getForObject(url, String.class, city, apiKey);
+        String url = "https://api.openweathermap.org/data/2.5/forecast?q={city}&cnt=16&appid={apiKey}&units=metric&lang=ru";
+        java.util.Map<String, String> params = java.util.Map.of(
+                "city", city,
+                "apiKey", apiKey
+        );
+        String json = restTemplate.getForObject(url, String.class, params);
         try {
             JsonNode root = mapper.readTree(json);
             JsonNode list = root.get("list");
