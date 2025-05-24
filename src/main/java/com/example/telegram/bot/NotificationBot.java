@@ -2,8 +2,7 @@ package com.example.telegram.bot;
 
 import com.example.telegram.config.BotConfig;
 import jakarta.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -13,9 +12,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Component
+@Slf4j
 public class NotificationBot extends TelegramLongPollingBot {
-
-    private static final Logger logger = LoggerFactory.getLogger(NotificationBot.class);
     private final BotConfig config;
 
     public NotificationBot(BotConfig config) {
@@ -48,7 +46,7 @@ public class NotificationBot extends TelegramLongPollingBot {
             try {
                 execute(response);
             } catch (TelegramApiException e) {
-                logger.error("Failed to send message", e);
+                log.error("Failed to send message", e);
             }
         }
     }
